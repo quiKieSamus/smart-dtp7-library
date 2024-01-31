@@ -21,3 +21,101 @@ $WRONG_CONNECT_RESPONSE_SAMPLE = '{
     "sn": "X9B0000688",
     "token_type": "bearer"
   }';
+
+
+$USUARIO_RESPONSE_GET_SAMPLE = '[
+  {
+    "borrado": 0,
+    "datosPersonales": {},
+    "fechaCre": 1687200362,
+    "fechaMo": 1687200362,
+    "id": 1,
+    "nombre": "Gerente",
+    "permisos": {
+      "Anulacion": true,
+      "Correccion": true,
+      "CorreccionPago": true,
+      "CrearProducto": true,
+      "Descuentos": true,
+      "FondoCaja": true,
+      "ModificarFactura": true,
+      "Recargos": true,
+      "ReportesZ": true,
+      "RetiroCaja": true
+    },
+    "rsocial": "Gerente",
+    "tipo": 3
+  },
+  {
+    "borrado": 0,
+    "codigo": "123456789",
+    "datosPersonales": {},
+    "fechaCre": 1687200362,
+    "fechaMo": 1687200362,
+    "id": 2,
+    "nombre": "Cajero",
+    "permisos": {
+      "Anulacion": true,
+      "Correccion": true,
+      "CorreccionPago": true,
+      "CrearProducto": true,
+      "Descuentos": true,
+      "FondoCaja": true,
+      "ModificarFactura": true,
+      "Recargos": true,
+      "ReportesZ": true,
+      "RetiroCaja": true
+    },
+    "rif": "123456789",
+    "rsocial": "Cajero",
+    "tipo": 0
+  },
+  {
+    "borrado": 0,
+    "codigo": "",
+    "datosPersonales": {},
+    "fechaCre": 1704983047,
+    "fechaMo": 1704983047,
+    "id": 3,
+    "nombre": "genionet",
+    "permisos": {
+      "Anulacion": false,
+      "Correccion": false,
+      "CorreccionPago": false,
+      "CrearProducto": false,
+      "Descuentos": false,
+      "FondoCaja": false,
+      "ModificarFactura": false,
+      "Recargos": false,
+      "ReportesZ": false,
+      "RetiroCaja": false
+    },
+    "rif": "J316297063",
+    "rsocial": "Genionet",
+    "tipo": 2
+  },
+  {
+    "borrado": 0,
+    "codigo": "PR00099",
+    "datosPersonales": {},
+    "fechaCre": 1704988377,
+    "fechaMo": 1704988377,
+    "id": 4,
+    "nombre": "Carro Ultra Arrecho",
+    "permisos": {
+      "Anulacion": false,
+      "Correccion": false,
+      "CorreccionPago": false,
+      "CrearProducto": false,
+      "Descuentos": false,
+      "FondoCaja": false,
+      "ModificarFactura": false,
+      "Recargos": false,
+      "ReportesZ": false,
+      "RetiroCaja": false
+    },
+    "rif": "",
+    "rsocial": "",
+    "tipo": 0
+  }
+]';
