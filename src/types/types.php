@@ -84,7 +84,7 @@ class Person extends Manipulable
     public string $rif;
 }
 
-class Permissions
+class Permisos
 {
     public bool $Anulacion;
     public bool $Correcion;
@@ -125,7 +125,7 @@ class Permissions
 class Usuario extends Person
 {
     public string $codigo;
-    public Permissions $permisos;
+    public Permisos $permisos;
     public string $rsocial;
     public int $tipo;
 
@@ -137,7 +137,7 @@ class Usuario extends Person
         string $rif,
         string|int $fechaCre,
         string|int $fechaMo,
-        Permissions $permissions,
+        Permisos $permissions,
         string $rsocial,
         int $tipo,
         string|null $codigo = "",

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | false
 {
@@ -51,7 +52,7 @@ function makeHTTPRequest(string $url, string $method, array $headers, string|nul
         if (!is_null($headers)) {
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         }
-        
+
         if (!is_null($body)) {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         }
@@ -67,61 +68,40 @@ function makeHTTPRequest(string $url, string $method, array $headers, string|nul
     }
 }
 
-function createInstance(string $className, array $properties) {
+function createInstance(string $className, array $properties)
+{
     if (!class_exists($className)) return false;
     $instance = new $className(...$properties);
     return $instance;
 }
 
-function makeResponseArrayItemsUsuario(array $values): array {
+function makeTypesForTableResponse(array $values, string $className): array
+{
     try {
-        $firstItem = $values[0];
-        !property_exists($firstItem, "codigo") ? $firstItem->codigo = "" : true;
-        $permissions = new Permissions(true, true, true, true, true, true, true, true, true, true);
-        $sampleTypeCorrectInstance = new Usuario(0, 1, new DatosPersonales(), "ruben", "V123", "1", "1", $permissions, "a", 1);
-        $currentProps = json_decode(json_encode($firstItem), true);
-        $correctProps = getPropertiesOfClass($sampleTypeCorrectInstance);
+        $typeCorrectData = makeSampleTypeCorrectObject($className);
+        $correctProperties = getPropertiesOfClass($typeCorrectData);
+        return array_map(function($item) use ($typeCorrectData, $correctProperties) {
+            $itemAssoc = json_decode(json_encode($item), true);
+            if (!keysExistsInJson($correctProperties, $itemAssoc)) {
 
-        if (!keysExistsInJson($correctProps, $currentProps)) throw new Exception("Los datos obtenidos no son los esperadas para la tabla");
-
-        return array_map(function ($item) {
-            $datosPersonales = new DatosPersonales(
-                property_exists($item->datosPersonales, "Celular") ? (is_null($item->datosPersonales->Celular) ? "" : $item->datosPersonales->Celular) : "",
-                property_exists($item->datosPersonales, "Direccion") ? (is_null($item->datosPersonales->Direccion) ? "" : $item->datosPersonales->Direccion) : "",
-                property_exists($item->datosPersonales, "Email") ? (is_null($item->datosPersonales->Email) ? "" : $item->datosPersonales->Email) : "",
-                property_exists($item->datosPersonales, "Facebook") ? (is_null($item->datosPersonales->Facebook) ? "" : $item->datosPersonales->Facebook) : "",
-                property_exists($item->datosPersonales, "Instagram") ? (is_null($item->datosPersonales->Instagram) ? "" : $item->datosPersonales->Instagram) : "",
-                property_exists($item->datosPersonales, "PaginaWeb") ? (is_null($item->datosPersonales->PaginaWeb) ? "" : $item->datosPersonales->PaginaWeb) : "",
-                property_exists($item->datosPersonales, "Telefono") ? (is_null($item->datosPersonales->Telefono) ? "" : $item->datosPersonales->Telefono) : "",
-                property_exists($item->datosPersonales, "Twitter") ? (is_null($item->datosPersonales->Twitter) ? "" : $item->datosPersonales->Twitter) : ""
-            );
-
-            $permisos = new Permissions(
-                $item->permisos->Anulacion,
-                $item->permisos->Correccion,
-                $item->permisos->CorreccionPago,
-                $item->permisos->CrearProducto,
-                $item->permisos->Descuentos,
-                $item->permisos->FondoCaja,
-                $item->permisos->ModificarFactura, 
-                $item->permisos->Recargos,
-                $item->permisos->ReportesZ,
-                $item->permisos->RetiroCaja
-            );
-            return new Usuario(
-                $item->borrado, 
-                $item->id, 
-                $datosPersonales, 
-                $item->nombre, 
-                $item->rif, 
-                $item->fechaCre, 
-                $item->fechaMo, 
-                $permisos, 
-                $item->rsocial, 
-                $item->tipo, 
-                $item->codigo);
+            }
         }, $values);
     } catch (Exception $error) {
         throw $error;
     }
+}
+
+function makeSampleTypeCorrectObject(string $className)
+{
+    $lowerCaseClassName = strtolower($className);
+    switch ($lowerCaseClassName) {
+        case 'usuario':
+            $sampleDatosPersonales = new DatosPersonales("", "", "", "", "", "", "", "");
+            $samplePermission = new Permisos(false, true, false, true, false, true, false, true, false, true);
+            return new Usuario(1, 123, $sampleDatosPersonales, "", "", "", "", $samplePermission, "", 0, "");
+    }
+}
+
+function fillMissingProperties(array $correct_properties, array $current_properties) {
+    
 }
