@@ -56,12 +56,14 @@ function makeHTTPRequest(string $url, string $method, array $headers, string|nul
         if (!is_null($body)) {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         }
+        
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         // getting response
         $response = curl_exec($curl);
 
         curl_close($curl);
+
         return $response;
     } catch (Exception $error) {
         throw $error;
@@ -80,10 +82,9 @@ function makeTypesForTableResponse(array $values, string $className): array
     try {
         $typeCorrectData = makeSampleTypeCorrectObject($className);
         $correctProperties = getPropertiesOfClass($typeCorrectData);
-        return array_map(function($item) use ($typeCorrectData, $correctProperties) {
+        return array_map(function ($item) use ($typeCorrectData, $correctProperties) {
             $itemAssoc = json_decode(json_encode($item), true);
             if (!keysExistsInJson($correctProperties, $itemAssoc)) {
-
             }
         }, $values);
     } catch (Exception $error) {
@@ -102,6 +103,19 @@ function makeSampleTypeCorrectObject(string $className)
     }
 }
 
-function fillMissingProperties(array $correct_properties, array $current_properties) {
-    
-}
+// function fillMissingProperties(array $correctProperties, object $currentObject, string $className)
+// {
+//     try {
+//         $sampleTypeCorrectObject = makeSampleTypeCorrectObject($className);
+//         $currentProps = json_decode(json_encode($currentObject), true);
+//         $arrayOfCurrentProps = getPropertiesOfClass($currentObject);
+//         for ($i = 0; $i < count($correctProperties); $i++) {
+//             $correctProp = $correctProperties[$i];
+//             if (!in_array($correctProp, $arrayOfCurrentProps)) {
+
+//             }
+//         }
+//     } catch (Exception $error) {
+//         throw new $error;
+//     }
+// }

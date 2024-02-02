@@ -57,3 +57,81 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         throw $error;
     }
 }
+
+function createData(string $fiscalIpAndPort, array $userAndPass, string $resource, object|array $data)
+{
+    try {
+        $authorization = getToken($fiscalIpAndPort, $userAndPass);
+        if (!$authorization) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
+        $token = $authorization->jwt;
+        $url = "http://" . $fiscalIpAndPort . "/api/" . $resource;
+        $body = json_encode($data);
+        $contentLength = strlen($body);
+        $headers = [
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+            "content-type: application/json; charset=utf-8",
+            "Authorization: Bearer " . $token,
+            "Content-Length: " . $contentLength
+        ];
+        $httpRequest = makeHTTPRequest($url, "POST", $headers, $body);
+        return $httpRequest;
+    } catch (Exception $error) {
+        throw $error;
+    }
+}
+
+function updateData(string $fiscalIpAndPort, array $userAndPass, string $resource, array|object $body)
+{
+    try {
+        $authorization = getToken($fiscalIpAndPort, $userAndPass);
+        if (!$authorization) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
+        $token = $authorization->jwt;
+        $url = "http://" . $fiscalIpAndPort . "/api/" . $resource;
+        $body = json_encode($body);
+        $contentLength = strlen($body);
+        $headers = [
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+            "content-type: application/json; charset=utf-8",
+            "Authorization: Bearer " . $token,
+            "Content-Length: " . $contentLength
+        ];
+        $httpRequest = makeHTTPRequest($url, "PUT", $headers, $body);
+        return $httpRequest;
+    } catch (Exception $error) {
+        throw $error;
+    }
+}
+
+function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id) {
+    try {
+        $authorization = getToken($fiscalIpAndPort, $userAndPass);
+        if (!$authorization) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
+        $token = $authorization->jwt;
+        $url = "http://" . $fiscalIpAndPort . "/api/" . $resource . "?id=" . $id;
+        $headers = [
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+            "Authorization: Bearer " . $token,
+        ];
+        $httpRequest = makeHTTPRequest($url, "DELETE", $headers, null);
+        return $httpRequest;
+    } catch (Exception $error) {
+        throw $error;
+    }
+}
+
+function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id) {
+    try {
+        $authorization = getToken($fiscalIpAndPort, $userAndPass);
+        if (!$authorization) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
+        $token = $authorization->jwt;
+        $url = "http://" . $fiscalIpAndPort . "/api/recuperar?tabla=" . $resource . "&id=" . $id;
+        $headers = [
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+            "Authorization: Bearer " . $token,
+        ];
+        $httpRequest = makeHTTPRequest($url, "GET", $headers, null);
+        return $httpRequest;
+    } catch (Exception $error) {
+        throw $error;
+    }
+}
