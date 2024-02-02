@@ -39,8 +39,8 @@ class ConnectResponse
 class Manipulable
 {
     public int $borrado;
-    public string|int $fechaCre;
-    public string|int $fechaMo;
+    public string|int $fechaCre = "";
+    public string|int $fechaMo = "";
     public int $id;
 }
 
@@ -77,7 +77,7 @@ class DatosPersonales
     }
 }
 
-class Person extends Manipulable
+class Persona extends Manipulable
 {
     public DatosPersonales $datosPersonales;
     public string $nombre;
@@ -122,7 +122,7 @@ class Permisos
     }
 }
 
-class Usuario extends Person
+class Usuario extends Persona
 {
     public string $codigo;
     public Permisos $permisos;
@@ -153,5 +153,31 @@ class Usuario extends Person
         $this->rsocial = $rsocial;
         $tipo > 3 || $tipo < 0 ? $this->tipo = 0 : $this->tipo = $tipo;
         is_null($codigo) ? $this->codigo = "" : $this->codigo = $codigo;
+    }
+}
+
+class Cliente extends Persona
+{
+    public string $codigo = "";
+    public int $fechaRe;
+    public int $fechaUl;
+    public int $id;
+
+    public function __construct(
+        string $codigo = "",
+        int $fechaRe,
+        int $fechaUl,
+        int $id,
+        string $rif = "",
+        string $nombre = "",
+        DatosPersonales $datosPersonales
+    ) {
+        $this->codigo = $codigo;
+        $this->fechaRe = $fechaRe;
+        $this->fechaUl = $fechaUl;
+        $this->id = $id;
+        $this->rif = $rif;
+        $this->nombre = $nombre;
+        $this->datosPersonales = $datosPersonales;
     }
 }

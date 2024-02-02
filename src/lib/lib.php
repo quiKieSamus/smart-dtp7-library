@@ -25,7 +25,7 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
 function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, int|null $id = null, string|null $codigo = null): false | array | object
 {
     try {
-        $validTables = ["usuarios", "vendedores", "proveedores"];
+        $validTables = ["usuarios", "vendedores", "proveedores", "clientes", "productos"];
         if (!in_array($tabla, $validTables, true)) return false;
         $getTokenRequest = getToken($fiscalIpAndPort, $userAndPass);
 
