@@ -97,9 +97,12 @@ function makeSampleTypeCorrectObject(string $className)
     $lowerCaseClassName = strtolower($className);
     switch ($lowerCaseClassName) {
         case 'usuario':
-            $sampleDatosPersonales = new DatosPersonales("", "", "", "", "", "", "", "");
+            $sampleDatosPersonales = new DatosPersonales();
             $samplePermission = new Permisos(false, true, false, true, false, true, false, true, false, true);
             return new Usuario(1, 123, $sampleDatosPersonales, "", "", "", "", $samplePermission, "", 0, "");
+        case 'cliente':
+            $sampleDatosPersonales = new DatosPersonales();
+            return new Cliente("", 0, 0, 0, "", "", $sampleDatosPersonales);
     }
 }
 
