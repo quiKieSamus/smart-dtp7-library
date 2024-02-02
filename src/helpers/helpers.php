@@ -6,7 +6,7 @@ function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | fals
     if (!isValidJSON($json)) return false;
     $classProperties = getPropertiesOfClass(new ConnectResponse("", 1, "", 1, "", "", "", ""));
     $jsonAssoc = json_decode($json, true);
-    if (!keysExistsInJson($classProperties, $jsonAssoc)) return false;
+    if (!keysExistsInJson($classProperties, $jsonAssoc)["status"]) return false;
 
     return new ConnectResponse(
         $jsonAssoc['Estado'],
@@ -25,15 +25,17 @@ function getPropertiesOfClass(object $object)
     return array_keys(get_object_vars($object));
 }
 
-function keysExistsInJson(array $expected_keys, array $current_keys): bool
+function keysExistsInJson(array $expected_keys, array $current_keys): array
 {
+    $missingKeys = [];
     for ($i = 0; $i < count($expected_keys); $i++) {
         $prop = $expected_keys[$i];
         if (!key_exists($prop, $current_keys)) {
-            return false;
+            array_push($missingKeys, $prop);
+            return ["status" => false, "missingKeys" => $missingKeys];
         }
     }
-    return true;
+    return ["status" => true];
 }
 
 function isValidJSON(string $json)
@@ -84,7 +86,7 @@ function makeTypesForTableResponse(array $values, string $className): array
         $correctProperties = getPropertiesOfClass($typeCorrectData);
         return array_map(function ($item) use ($typeCorrectData, $correctProperties) {
             $itemAssoc = json_decode(json_encode($item), true);
-            if (!keysExistsInJson($correctProperties, $itemAssoc)) {
+            if (!keysExistsInJson($correctProperties, $itemAssoc)["status"]) {
             }
         }, $values);
     } catch (Exception $error) {
