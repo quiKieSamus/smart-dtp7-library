@@ -30,7 +30,7 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         if (!in_array($tabla, $validTables, true)) return false;
         $getTokenRequest = getToken($fiscalIpAndPort, $userAndPass);
 
-        if (!$getTokenRequest) return false;
+        if (!$getTokenRequest) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
 
         $headers = [
             "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
