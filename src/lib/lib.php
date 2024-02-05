@@ -29,7 +29,7 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
 {
     try {
         $validTables = ["usuarios", "vendedores", "proveedores", "clientes", "productos"];
-        if (!in_array($tabla, $validTables, true)) return false;
+        if (!in_array($tabla, $validTables, true)) throw new Exception("Intenta acceder a un elemento de la impresora fiscal inexistente.");
         $getTokenRequest = getToken($fiscalIpAndPort, $userAndPass);
 
         if (!$getTokenRequest) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
