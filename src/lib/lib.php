@@ -18,7 +18,8 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
 
         return $response;
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
 
@@ -54,7 +55,8 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         }
         return $responseDecoded;
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
 
@@ -76,7 +78,8 @@ function createData(string $fiscalIpAndPort, array $userAndPass, string $resourc
         $httpRequest = makeHTTPRequest($url, "POST", $headers, $body);
         return $httpRequest;
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
 
@@ -98,11 +101,13 @@ function updateData(string $fiscalIpAndPort, array $userAndPass, string $resourc
         $httpRequest = makeHTTPRequest($url, "PUT", $headers, $body);
         return $httpRequest;
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
 
-function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id) {
+function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id)
+{
     try {
         $authorization = getToken($fiscalIpAndPort, $userAndPass);
         if (!$authorization) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
@@ -115,11 +120,13 @@ function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resourc
         $httpRequest = makeHTTPRequest($url, "DELETE", $headers, null);
         return $httpRequest;
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
 
-function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id) {
+function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id)
+{
     try {
         $authorization = getToken($fiscalIpAndPort, $userAndPass);
         if (!$authorization) throw new Exception("No se obtuvo el token, verifique ruta y datos de usuario admin");
@@ -132,6 +139,7 @@ function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resour
         $httpRequest = makeHTTPRequest($url, "GET", $headers, null);
         return $httpRequest;
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
