@@ -47,7 +47,7 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
 
         $response = makeHTTPRequest($finalUrl, "GET", $headers, null);
 
-        if (!$response) return false;
+        if (!$response) throw new Exception("No se pudo conectar a la máquina fiscal. Verifique ip y puerto");
 
         $responseDecoded = json_decode($response);
         if (is_array($responseDecoded)) return $responseDecoded;
