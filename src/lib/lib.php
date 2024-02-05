@@ -24,7 +24,7 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
     }
 }
 
-function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, int|null $id = null, string|null $codigo = null): false | array | object
+function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, int|null $id = null, string|null $codigo = null): array | object | string
 {
     try {
         $validTables = ["usuarios", "vendedores", "proveedores", "clientes", "productos"];
