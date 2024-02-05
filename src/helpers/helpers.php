@@ -3,21 +3,28 @@
 declare(strict_types=1);
 function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | false
 {
-    if (!isValidJSON($json)) return false;
-    $classProperties = getPropertiesOfClass(new ConnectResponse("", 1, "", 1, "", "", "", ""));
-    $jsonAssoc = json_decode($json, true);
-    if (!keysExistsInJson($classProperties, $jsonAssoc)["status"]) return false;
+    try {
+        if (!isValidJSON($json)) return false;
+        $classProperties = getPropertiesOfClass(new ConnectResponse("", 1, "", 1, "", "", "", ""));
+        $jsonAssoc = json_decode($json, true);
 
-    return new ConnectResponse(
-        $jsonAssoc['Estado'],
-        $jsonAssoc['expires_in'],
-        $jsonAssoc['firmware_version'],
-        $jsonAssoc['id'],
-        $jsonAssoc['jwt'],
-        $jsonAssoc['rif'],
-        $jsonAssoc['sn'],
-        $jsonAssoc['token_type']
-    );
+        if (!keysExistsInJson($classProperties, $jsonAssoc)["status"]) throw new Exception("El json esperado no tiene las keys esperadas");
+    
+        return new ConnectResponse(
+            $jsonAssoc['Estado'],
+            $jsonAssoc['expires_in'],
+            $jsonAssoc['firmware_version'],
+            $jsonAssoc['id'],
+            $jsonAssoc['jwt'],
+            $jsonAssoc['rif'],
+            $jsonAssoc['sn'],
+            $jsonAssoc['token_type']
+        );
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        return false;
+    }
+
 }
 
 function getPropertiesOfClass(object $object)
