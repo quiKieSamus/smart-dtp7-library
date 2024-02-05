@@ -12,6 +12,8 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
 
         $response = makeHTTPRequest("http://" . $fiscalIPAndPort . "/api/token", "POST", $headers, $body);
 
+        if (!$response) throw new Exception("Hubo un fallo al conectar con la impresora. Verifique la ip y el puerto.");
+
         $response = makeObjectConnectResponseFromJSON($response);
 
         if (!$response) throw new Exception("Petición no autorizada");
