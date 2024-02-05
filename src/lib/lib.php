@@ -27,7 +27,7 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
 function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, int|null $id = null, string|null $codigo = null): array | object | string
 {
     try {
-        $validTables = ["usuarios", "vendedores", "proveedores", "clientes", "productos"];
+        $validTables = ["usuarios", "vendedores", "proveedores", "clientes", "productos", "monedas"];
         if (!in_array($tabla, $validTables, true)) throw new Exception("Intenta acceder a un elemento de la impresora fiscal inexistente.");
         $getTokenRequest = getToken($fiscalIpAndPort, $userAndPass);
 
@@ -77,6 +77,7 @@ function createData(string $fiscalIpAndPort, array $userAndPass, string $resourc
             "Content-Length: " . $contentLength
         ];
         $httpRequest = makeHTTPRequest($url, "POST", $headers, $body);
+        if (!$httpRequest) throw new Exception("No se pudo cargar el elemento");
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
