@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 function getToken(string $fiscalIPAndPort, array $userAndPass)
 {
@@ -21,7 +20,7 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
         return $response;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return false;
     }
 }
 
