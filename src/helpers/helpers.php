@@ -9,7 +9,7 @@ function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | fals
         $jsonAssoc = json_decode($json, true);
 
         if (!keysExistsInJson($classProperties, $jsonAssoc)["status"]) throw new Exception("El json esperado no tiene las keys esperadas");
-    
+
         return new ConnectResponse(
             $jsonAssoc['Estado'],
             $jsonAssoc['expires_in'],
@@ -38,11 +38,11 @@ function keysExistsInJson(array $expected_keys, array $current_keys): array
         $prop = $expected_keys[$i];
         if (!key_exists($prop, $current_keys)) array_push($missingKeys, $prop);
     }
-    
+
     return count($missingKeys) > 0 ? ["status" => false, "missingKeys" => $missingKeys] : ["status" => true];
 }
 
-function isValidJSON(string $json)
+function isValidJSON(string $json): bool
 {
     return !json_decode($json) ? false : true;
 }
@@ -51,41 +51,41 @@ function makeHTTPRequest(string $url, string $method = "GET", array|null $header
 {
     try {
         $allowedMethods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
-        if (!in_array($method, $allowedMethods)) throw new Exception("Method not allowed");
-        
-        
-        
+        if (!in_array($method, $allowedMethods)) throw new Exception("Método no permitido");
+
+
+
         $curl = curl_init($url);
         $method = mb_strtoupper($method, "UTF-8");
-        
+
         // configuring request
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, is_null($method) ? 'GET' : $method);
-        
+
         // setting header connection close; check if $headers is null
         if (is_null($headers)) $headers = [];
         array_push($headers, "Connection: Close");
 
         if (!is_null($headers)) {
-            if (!curl_setopt($curl, CURLOPT_HTTPHEADER, $headers)) throw new Exception("Failed appending headers to request");
+            if (!curl_setopt($curl, CURLOPT_HTTPHEADER, $headers)) throw new Exception("Fallo al añadir las cabeceras HTTP");
         }
 
         if (!is_null($body) && $method !== 'GET') {
-            if (!curl_setopt($curl, CURLOPT_POSTFIELDS, $body)) throw new Exception("Failed appending body to request");
+            if (!curl_setopt($curl, CURLOPT_POSTFIELDS, $body)) throw new Exception("Fallo al añadir cuerpo a la petición HTTP");
         }
-        
-        if (!curl_setopt($curl, CURLOPT_RETURNTRANSFER, true)) throw new Exception("Failed setting the request as return");
-        
+
+        if (!curl_setopt($curl, CURLOPT_RETURNTRANSFER, true)) throw new Exception("Fallo al querer establecer la petición como operación de retorno");
+
         // getting response
         $response = curl_exec($curl);
-        if (!$response) throw new Exception("Request failed");
+        if (!$response) throw new Exception("La petición falló");
 
-        curl_close($curl); 
-        
+        curl_close($curl);
+
         return $response;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return "Request failed " . $error->getMessage();
-    } 
+        return "Fallo en la petición: " . $error->getMessage();
+    }
 }
 
 function createInstance(string $className, array $properties)
@@ -113,15 +113,24 @@ function makeTypesForTableResponse(array $values, string $className): array|fals
 
 function makeSampleTypeCorrectObject(string $className)
 {
-    $lowerCaseClassName = strtolower($className);
-    switch ($lowerCaseClassName) {
-        case 'usuario':
-            $sampleDatosPersonales = new DatosPersonales();
-            $samplePermission = new Permisos(false, true, false, true, false, true, false, true, false, true);
-            return new Usuario(1, 123, $sampleDatosPersonales, "", "", "", "", $samplePermission, "", 0, "");
-        case 'cliente':
-            $sampleDatosPersonales = new DatosPersonales();
-            return new Cliente("", 0, 0, 0, "", "", $sampleDatosPersonales);
+    try {
+        $lowerCaseClassName = strtolower($className);
+        switch ($lowerCaseClassName) {
+            case 'usuario':
+                $sampleDatosPersonales = new DatosPersonales();
+                $samplePermission = new Permisos(false, true, false, true, false, true, false, true, false, true);
+                return new Usuario(1, 123, $sampleDatosPersonales, "", "", "", "", $samplePermission, "", 0, "");
+            case 'cliente':
+                $sampleDatosPersonales = new DatosPersonales();
+                return new Cliente("", 0, 0, 0, "", "", $sampleDatosPersonales);
+            case 'producto':
+                return new Producto(0, "", "", 0, 0, 0, 0, 0, 0, 0, 0, "producto", 0, [100, 200, 300], 1);
+            default:
+                throw new Exception("Clase no existe");
+        }
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        return false;
     }
 }
 

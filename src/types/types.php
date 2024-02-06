@@ -181,3 +181,53 @@ class Cliente extends Persona
         $this->datosPersonales = $datosPersonales;
     }
 }
+
+class Producto extends Manipulable
+{
+    public string $codbarra;
+    public string $codigo;
+    public int $decCan;
+    public int $departamento;
+    public int $favorito;
+    public int $grupo;
+    public int $imp;
+    public string $nombre;
+    public int $preAbi;
+    public array $precios;
+    public int $unidad;
+
+    public function __construct(
+        int $borrado = 0,
+        string $codbarra = "",
+        string $codigo = "",
+        int $decCan = 0,
+        int $departamento,
+        int $fechaCre,
+        int $fechaMo,
+        int $favorito,
+        int $grupo,
+        int $id,
+        int $imp,
+        string $nombre,
+        int $preAbi,
+        array $precios,
+        int $unidad
+    ) {
+        $this->borrado = $borrado;
+        $this->codbarra = $codbarra;
+        $this->codigo = $codigo;
+        $this->decCan = $decCan;
+        $this->departamento = $departamento;
+        $this->favorito = $favorito;
+        $this->fechaCre = $fechaCre;
+        $this->fechaMo = $fechaMo;
+        $this->grupo = $grupo;
+        $this->id = $id;
+        $this->imp = $imp;
+        $this->nombre = $nombre;
+        $this->preAbi = $preAbi;
+        $this->precios = $precios;
+        $this->unidad = $unidad;
+
+    }
+}
