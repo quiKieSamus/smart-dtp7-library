@@ -24,7 +24,6 @@ function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | fals
         error_log($e->getMessage());
         return false;
     }
-
 }
 
 function getPropertiesOfClass(object $object)
@@ -50,33 +49,45 @@ function isValidJSON(string $json)
     return !json_decode($json) ? false : true;
 }
 
-function makeHTTPRequest(string $url, string $method, array $headers, string|null $body)
+function makeHTTPRequest(string $url, string $method = "GET", array|null $headers, string|null $body): string
 {
     try {
+        $allowedMethods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
+        if (!in_array($method, $allowedMethods)) throw new Exception("Method not allowed");
+        
+        
+        
         $curl = curl_init($url);
-
+        $method = mb_strtoupper($method, "UTF-8");
+        
         // configuring request
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, is_null($method) ? 'GET' : $method);
+        
+        // setting header connection close; check if $headers is null
+        if (is_null($headers)) $headers = [];
+        array_push($headers, "Connection: Close");
 
         if (!is_null($headers)) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            if (!curl_setopt($curl, CURLOPT_HTTPHEADER, $headers)) throw new Exception("Failed appending headers to request");
         }
 
-        if (!is_null($body)) {
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+        if (!is_null($body) && $method !== 'GET') {
+            if (!curl_setopt($curl, CURLOPT_POSTFIELDS, $body)) throw new Exception("Failed appending body to request");
         }
         
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+        if (!curl_setopt($curl, CURLOPT_RETURNTRANSFER, true)) throw new Exception("Failed setting the request as return");
+        
         // getting response
         $response = curl_exec($curl);
+        if (!$response) throw new Exception("Request failed");
 
-        curl_close($curl);
-
+        curl_close($curl); 
+        
         return $response;
     } catch (Exception $error) {
-        throw $error;
-    }
+        error_log($error->getMessage());
+        return "Request failed " . $error->getMessage();
+    } 
 }
 
 function createInstance(string $className, array $properties)
@@ -86,7 +97,7 @@ function createInstance(string $className, array $properties)
     return $instance;
 }
 
-function makeTypesForTableResponse(array $values, string $className): array
+function makeTypesForTableResponse(array $values, string $className): array|false
 {
     try {
         $typeCorrectData = makeSampleTypeCorrectObject($className);
@@ -97,7 +108,8 @@ function makeTypesForTableResponse(array $values, string $className): array
             }
         }, $values);
     } catch (Exception $error) {
-        throw $error;
+        error_log($error->getMessage());
+        return false;
     }
 }
 
