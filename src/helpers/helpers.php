@@ -36,12 +36,10 @@ function keysExistsInJson(array $expected_keys, array $current_keys): array
     $missingKeys = [];
     for ($i = 0; $i < count($expected_keys); $i++) {
         $prop = $expected_keys[$i];
-        if (!key_exists($prop, $current_keys)) {
-            array_push($missingKeys, $prop);
-            return ["status" => false, "missingKeys" => $missingKeys];
-        }
+        if (!key_exists($prop, $current_keys)) array_push($missingKeys, $prop);
     }
-    return ["status" => true];
+    
+    return count($missingKeys) > 0 ? ["status" => false, "missingKeys" => $missingKeys] : ["status" => true];
 }
 
 function isValidJSON(string $json)
