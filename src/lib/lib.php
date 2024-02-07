@@ -148,10 +148,19 @@ function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resour
 function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, string $tabla, string $codigo): string|array {
     try {
         $resources = getTabla($fiscalIpAndPort, $userAndPass, $tabla);
+        
         $filter = array_filter($resources, function ($item) use ($codigo) {
             return $item->codigo === $codigo;
         });
-        return json_encode($filter);
+        
+        $filterValue = null;
+        for ($i = 0; $i < count($resources); $i++) {
+            if (isset($filter[$i])) {
+                $filterValue = $filter[$i];
+                break;
+            }
+        }
+        return json_encode($filterValue);
     } catch (Exception $error) {
         logError($error);
         return ["status" => false, "reason" => $error->getMessage()];
