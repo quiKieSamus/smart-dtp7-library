@@ -56,11 +56,11 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         return $responseDecoded;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return ["status" => false, "reason" => $error->getMessage()];
     }
 }
 
-function createData(string $fiscalIpAndPort, array $userAndPass, string $resource, object|array $data)
+function createData(string $fiscalIpAndPort, array $userAndPass, string $resource, object|array $data): string|array
 {
     try {
         $authorization = getToken($fiscalIpAndPort, $userAndPass);
@@ -80,11 +80,11 @@ function createData(string $fiscalIpAndPort, array $userAndPass, string $resourc
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return ["status" => false, "reason" => $error->getMessage()];
     }
 }
 
-function updateData(string $fiscalIpAndPort, array $userAndPass, string $resource, array|object $body)
+function updateData(string $fiscalIpAndPort, array $userAndPass, string $resource, array|object $body): string|array
 {
     try {
         $authorization = getToken($fiscalIpAndPort, $userAndPass);
@@ -103,11 +103,11 @@ function updateData(string $fiscalIpAndPort, array $userAndPass, string $resourc
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return ["status" => false, "reason" => $error->getMessage()];
     }
 }
 
-function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id)
+function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id): string|array
 {
     try {
         $authorization = getToken($fiscalIpAndPort, $userAndPass);
@@ -122,11 +122,11 @@ function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resourc
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return ["status" => false, "reason" => $error->getMessage()];
     }
 }
 
-function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id)
+function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resource, int|string $id): string|array
 {
     try {
         $authorization = getToken($fiscalIpAndPort, $userAndPass);
@@ -141,11 +141,11 @@ function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resour
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return ["status" => false, "reason" => $error->getMessage()];
     }
 }
 
-function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, string $tabla, string $codigo) {
+function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, string $tabla, string $codigo): string|array {
     try {
         $resources = getTabla($fiscalIpAndPort, $userAndPass, $tabla);
         $filter = array_filter($resources, function ($item) use ($codigo) {
@@ -154,6 +154,6 @@ function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, 
         return json_encode($filter);
     } catch (Exception $error) {
         logError($error);
-        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+        return ["status" => false, "reason" => $error->getMessage()];
     }
 }
