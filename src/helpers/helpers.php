@@ -21,7 +21,7 @@ function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | fals
             $jsonAssoc['token_type']
         );
     } catch (Exception $e) {
-        error_log($e->getMessage());
+        logError($e);
         return false;
     }
 }
@@ -44,56 +44,67 @@ function keysExistsInJson(array $expected_keys, array $current_keys): array
 
 function isValidJSON(string $json): bool
 {
-    return !json_decode($json) ? false : true;
+    return !json_encode($json) ? false : true;
 }
 
-function makeHTTPRequest(string $url, string $method = "GET", array|null $headers, string|null $body): string
+function makeHTTPRequest(string $url, array|null $headers, string|null $body, string $method = "GET"): string
 {
     try {
-        $allowedMethods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
-        if (!in_array($method, $allowedMethods)) throw new Exception("Método no permitido");
-
-
-
-        $curl = curl_init($url);
-        $method = mb_strtoupper($method, "UTF-8");
-
-        // configuring request
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, is_null($method) ? 'GET' : $method);
-
-        // setting header connection close; check if $headers is null
-        if (is_null($headers)) $headers = [];
-        array_push($headers, "Connection: Close");
-
-        if (!is_null($headers)) {
-            if (!curl_setopt($curl, CURLOPT_HTTPHEADER, $headers)) throw new Exception("Fallo al añadir las cabeceras HTTP");
-        }
-
-        if (!is_null($body) && $method !== 'GET') {
-            if (!curl_setopt($curl, CURLOPT_POSTFIELDS, $body)) throw new Exception("Fallo al añadir cuerpo a la petición HTTP");
-        }
-
-        if (!curl_setopt($curl, CURLOPT_RETURNTRANSFER, true)) throw new Exception("Fallo al querer establecer la petición como operación de retorno");
-
-        // getting response
-        $response = curl_exec($curl);
-        if (!$response) throw new Exception("La petición falló");
-
-        curl_close($curl);
-
+        validateMethod($method);
+        $curl = setCURLOptions($url, $method, $headers, $body);
+        $response = executeHTTPRequest($curl);
         return $response;
-    } catch (Exception $error) {
-        error_log($error->getMessage());
-        return "Fallo en la petición: " . $error->getMessage();
+    } catch (Exception $e) {
+        logError($e);
+        return "Fallo en la petición: " . $e->getMessage();
     }
 }
 
-function createInstance(string $className, array $properties)
+function setCURLOptions(string $url, string $method, array|null $headers, string|null $body): CurlHandle
 {
-    if (!class_exists($className)) return false;
-    $instance = new $className(...$properties);
-    return $instance;
+    $curl = curl_init($url);
+    $method = mb_strtoupper($method, "UTF-8");
+
+    // configuring request
+    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, is_null($method) ? 'GET' : $method);
+
+    // setting header connection close; check if $headers is null
+    if (is_null($headers)) $headers = [];
+    array_push($headers, "Connection: Close");
+
+    if (!is_null($headers)) {
+        if (!curl_setopt($curl, CURLOPT_HTTPHEADER, $headers)) throw new Exception("Fallo al añadir las cabeceras HTTP");
+    }
+    // setting body when there is a body and the method is different to get
+    if (!is_null($body) && $method !== 'GET') {
+        if (!curl_setopt($curl, CURLOPT_POSTFIELDS, $body)) throw new Exception("Fallo al añadir cuerpo a la petición HTTP");
+    }
+
+    if (!curl_setopt($curl, CURLOPT_RETURNTRANSFER, true)) throw new Exception("Fallo al querer establecer la petición como operación de retorno");
+
+    return $curl;
 }
+
+function validateMethod(string $method): void
+{
+    $allowedMethods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
+    if (!in_array($method, $allowedMethods)) throw new Exception("Método no permitido");
+}
+
+function executeHTTPRequest(CurlHandle $curl): string
+{
+    $response = curl_exec($curl);
+    if (!$response) throw new Exception("La petición falló");
+    curl_close($curl);
+    return $response;
+}
+
+// function createInstance(string $className, array $properties)
+// {
+//     if (!class_exists($className)) return false;
+//     $instance = new $className(...$properties);
+//     return $instance;
+// }
 
 function makeTypesForTableResponse(array $values, string $className): array|false
 {
@@ -105,8 +116,8 @@ function makeTypesForTableResponse(array $values, string $className): array|fals
             if (!keysExistsInJson($correctProperties, $itemAssoc)["status"]) {
             }
         }, $values);
-    } catch (Exception $error) {
-        error_log($error->getMessage());
+    } catch (Exception $e) {
+        logError($e);
         return false;
     }
 }
@@ -119,19 +130,30 @@ function makeSampleTypeCorrectObject(string $className)
             case 'usuario':
                 $sampleDatosPersonales = new DatosPersonales();
                 $samplePermission = new Permisos(false, true, false, true, false, true, false, true, false, true);
-                return new Usuario(1, 123, $sampleDatosPersonales, "", "", "", "", $samplePermission, "", 0, "");
+                return new Usuario(1, $sampleDatosPersonales, "", "", 1, 1, $samplePermission, "", 0);
             case 'cliente':
                 $sampleDatosPersonales = new DatosPersonales();
-                return new Cliente("", 0, 0, 0, "", "", $sampleDatosPersonales);
+                return new Cliente(0, 0, 0, $sampleDatosPersonales);
             case 'producto':
-                return new Producto(0, "", "", 0, 0, 0, 0, 0, 0, 0, 0, "producto", 0, [100, 200, 300], 1);
+                return new Producto(0, 0, 0, 0, 0, 0, 0, "", 0, [100, 200, 300], 0);
             default:
                 throw new Exception("Clase no existe");
         }
     } catch (Exception $e) {
-        error_log($e->getMessage());
+        logError($e);
         return false;
     }
+}
+
+function logError(Exception $e): void
+{
+    error_log(sprintf(
+        "Error in file: %s at line %s with message: %s - Stack Trace: %s",
+        $e->getFile(),
+        $e->getLine(),
+        $e->getMessage(),
+        $e->getTraceAsString()
+    ));
 }
 
 // function fillMissingProperties(array $correctProperties, object $currentObject, string $className)
@@ -146,7 +168,7 @@ function makeSampleTypeCorrectObject(string $className)
 
 //             }
 //         }
-//     } catch (Exception $error) {
-//         throw new $error;
+//     } catch (Exception $e) {
+//         throw new $e;
 //     }
 // }

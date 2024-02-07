@@ -130,7 +130,6 @@ class Usuario extends Persona
     public int $tipo;
 
     public function __construct(
-        int $borrado = 0,
         int $id,
         DatosPersonales $datosPersonales,
         string $nombre,
@@ -141,6 +140,7 @@ class Usuario extends Persona
         string $rsocial,
         int $tipo,
         string|null $codigo = "",
+        int $borrado = 0,
     ) {
         $borrado > 1 || $borrado < 0 ? $this->borrado = 0 : $this->borrado = $borrado;
         $this->id = $id;
@@ -164,13 +164,13 @@ class Cliente extends Persona
     public int $id;
 
     public function __construct(
-        string $codigo = "",
         int $fechaRe,
         int $fechaUl,
         int $id,
+        DatosPersonales $datosPersonales,
         string $rif = "",
         string $nombre = "",
-        DatosPersonales $datosPersonales
+        string $codigo = "",
     ) {
         $this->codigo = $codigo;
         $this->fechaRe = $fechaRe;
@@ -197,10 +197,6 @@ class Producto extends Manipulable
     public int $unidad;
 
     public function __construct(
-        int $borrado = 0,
-        string $codbarra = "",
-        string $codigo = "",
-        int $decCan = 0,
         int $departamento,
         int $fechaCre,
         int $fechaMo,
@@ -211,7 +207,11 @@ class Producto extends Manipulable
         string $nombre,
         int $preAbi,
         array $precios,
-        int $unidad
+        int $unidad,
+        int $borrado = 0,
+        string $codbarra = "",
+        string $codigo = "",
+        int $decCan = 0,
     ) {
         $this->borrado = $borrado;
         $this->codbarra = $codbarra;
