@@ -42,7 +42,7 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         //url to make the request
         $finalUrl = "http://" . $fiscalIpAndPort . "/api/tabla?t=" . $tabla;
 
-        if (!is_null($id)) $finalUrl = $mainUrl . "&id=" . $id;
+        if (!is_null($id)) $finalUrl = $mainUrl . "&id=" . $id; 
         if (!is_null($codigo)) $finalUrl = $mainUrl . "&codigo=" . $codigo;
 
         $response = makeHTTPRequest($finalUrl, $headers, null, "GET");
@@ -142,6 +142,19 @@ function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resour
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
+        return json_encode(["status" => false, "reason" => $error->getMessage()]);
+    }
+}
+
+function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, string $tabla, string $codigo) {
+    try {
+        $resources = getTabla($fiscalIpAndPort, $userAndPass, $tabla);
+        $filter = array_filter($resources, function ($item) use ($codigo) {
+            return $item->codigo === $codigo;
+        });
+        return $filter;
+    } catch (Exception $error) {
+        logError($error);
         return json_encode(["status" => false, "reason" => $error->getMessage()]);
     }
 }
