@@ -9,7 +9,7 @@ function getToken(string $fiscalIPAndPort, array $userAndPass)
 
         $body = http_build_query($userAndPass);
 
-        $response = makeHTTPRequest("http://" . $fiscalIPAndPort . "/api/token", "POST", $headers, $body);
+        $response = makeHTTPRequest("http://" . $fiscalIPAndPort . "/api/token", $headers,  $body, "POST");
 
         if (!$response) throw new Exception("Hubo un fallo al conectar con la impresora. Verifique la ip y el puerto.");
 
@@ -45,7 +45,7 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         if (!is_null($id)) $finalUrl = $mainUrl . "&id=" . $id;
         if (!is_null($codigo)) $finalUrl = $mainUrl . "&codigo=" . $codigo;
 
-        $response = makeHTTPRequest($finalUrl, "GET", $headers, null);
+        $response = makeHTTPRequest($finalUrl, $headers, null, "GET");
 
         if (!$response) throw new Exception("No se pudo conectar a la máquina fiscal. Verifique ip y puerto");
 
@@ -76,7 +76,7 @@ function createData(string $fiscalIpAndPort, array $userAndPass, string $resourc
             "Authorization: Bearer " . $token,
             "Content-Length: " . $contentLength
         ];
-        $httpRequest = makeHTTPRequest($url, "POST", $headers, $body);
+        $httpRequest = makeHTTPRequest($url, $headers, $body, "POST");
         if (!$httpRequest) throw new Exception("No se pudo cargar el elemento");
         return $httpRequest;
     } catch (Exception $error) {
@@ -100,7 +100,7 @@ function updateData(string $fiscalIpAndPort, array $userAndPass, string $resourc
             "Authorization: Bearer " . $token,
             "Content-Length: " . $contentLength
         ];
-        $httpRequest = makeHTTPRequest($url, "PUT", $headers, $body);
+        $httpRequest = makeHTTPRequest($url, $headers, $body, "PUT");
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
@@ -119,7 +119,7 @@ function deleteData(string $fiscalIpAndPort, array $userAndPass, string $resourc
             "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
             "Authorization: Bearer " . $token,
         ];
-        $httpRequest = makeHTTPRequest($url, "DELETE", $headers, null);
+        $httpRequest = makeHTTPRequest($url, $headers, null, "DELETE");
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
@@ -138,7 +138,7 @@ function recoverData(string $fiscalIpAndPort, array $userAndPass, string $resour
             "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
             "Authorization: Bearer " . $token,
         ];
-        $httpRequest = makeHTTPRequest($url, "GET", $headers, null);
+        $httpRequest = makeHTTPRequest($url, $headers, null, "GET");
         return $httpRequest;
     } catch (Exception $error) {
         error_log($error->getMessage());
