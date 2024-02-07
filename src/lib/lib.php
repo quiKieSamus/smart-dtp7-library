@@ -43,9 +43,8 @@ function getTabla(string $fiscalIpAndPort, array $userAndPass, string $tabla, in
         $finalUrl = "http://" . $fiscalIpAndPort . "/api/tabla?t=" . $tabla;
 
         if (!is_null($id)) $finalUrl = $mainUrl . "&id=" . $id; 
-        if (!is_null($codigo)) $finalUrl = $mainUrl . "&codigo=" . $codigo;
-
-        $response = makeHTTPRequest($finalUrl, $headers, null, "GET");
+        
+        $response = !is_null($codigo) ? getSingleResourceByCodigo($fiscalIpAndPort, $userAndPass, $tabla, $codigo) : makeHTTPRequest($finalUrl, $headers, null, "GET");
 
         if (!$response) throw new Exception("No se pudo conectar a la máquina fiscal. Verifique ip y puerto");
 
@@ -152,7 +151,7 @@ function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, 
         $filter = array_filter($resources, function ($item) use ($codigo) {
             return $item->codigo === $codigo;
         });
-        return $filter;
+        return json_encode($filter);
     } catch (Exception $error) {
         logError($error);
         return json_encode(["status" => false, "reason" => $error->getMessage()]);
