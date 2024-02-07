@@ -150,6 +150,7 @@ function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, 
         $resources = getTabla($fiscalIpAndPort, $userAndPass, $tabla);
         
         $filter = array_filter($resources, function ($item) use ($codigo) {
+            if (!property_exists($item, "codigo")) return false;
             return $item->codigo === $codigo;
         });
         
