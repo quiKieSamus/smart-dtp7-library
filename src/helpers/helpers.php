@@ -156,6 +156,30 @@ function logError(Exception $e): void
     ));
 }
 
+function getOS(): string|false {
+    $os = php_uname();
+    $possibleOS = ["windows", "linux", "mac"];
+    for ($i = 0; $i < count($possibleOS); $i++) {
+        $os = $possibleOS[$i];
+        if (str_contains($os, mb_strtolower($os, "UTF-8"))) return $os;
+    }
+    return false;
+}
+
+function pingDevice(string $ip, string $os): ReturnTypes\PingResponse|false {
+    try {
+        $terminalCommand = "ping -n 1 " . $ip;
+        if ($os !== 'windows') $terminalCommand = "ping -c 1 " . $ip;
+        $code = 0;
+        $output = [];
+        $execution = exec($terminalCommand, $output, $code);
+        return new ReturnTypes\PingResponse($code, $output);
+    } catch (Exception $error) {
+        logError($error);
+        return false;
+    }
+}
+
 // function fillMissingProperties(array $correctProperties, object $currentObject, string $className)
 // {
 //     try {

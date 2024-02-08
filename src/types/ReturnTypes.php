@@ -13,3 +13,14 @@ class Response {
         $this->error = $error;
     }
 }
+
+class PingResponse {
+    public int $code;
+    public string $output;
+    public array $outputParts;
+    public function __construct(int $code, array $outputParts) {
+        $this->code = $code;
+        $this->outputParts = $outputParts;
+        $this->output = mb_convert_encoding(join("\n", $this->outputParts), "UTF-8");
+    }
+}

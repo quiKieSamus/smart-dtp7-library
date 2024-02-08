@@ -1,5 +1,18 @@
 <?php
 declare(strict_types=1);
+
+function isFiscalPrinterActive($fiscalIp): bool {
+    try {
+        $os = getOS();
+        if (!$os) throw new Exception("Os not recognized");
+        $pingDeviceResult = pingDevice($fiscalIp, $os);
+        return $pingDeviceResult->code === 0 ? true : false;
+    } catch (Exception $error) {
+        logError($error);
+        return false;
+    }
+}
+
 function getToken(string $fiscalIPAndPort, array $userAndPass): bool | ResponseTypes\ConnectResponse
 {
     try {
