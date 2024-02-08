@@ -1,16 +1,16 @@
 <?php
 
 declare(strict_types=1);
-function makeObjectConnectResponseFromJSON(string $json): ConnectResponse | false
+function makeObjectConnectResponseFromJSON(string $json): ResponseTypes\ConnectResponse | false
 {
     try {
         if (!isValidJSON($json)) return false;
-        $classProperties = getPropertiesOfClass(new ConnectResponse("", 1, "", 1, "", "", "", ""));
+        $classProperties = getPropertiesOfClass(new ResponseTypes\ConnectResponse("", 1, "", 1, "", "", "", ""));
         $jsonAssoc = json_decode($json, true);
 
         if (!keysExistsInJson($classProperties, $jsonAssoc)["status"]) throw new Exception("El json esperado no tiene las keys esperadas");
 
-        return new ConnectResponse(
+        return new ResponseTypes\ConnectResponse(
             $jsonAssoc['Estado'],
             $jsonAssoc['expires_in'],
             $jsonAssoc['firmware_version'],
@@ -128,14 +128,14 @@ function makeSampleTypeCorrectObject(string $className)
         $lowerCaseClassName = strtolower($className);
         switch ($lowerCaseClassName) {
             case 'usuario':
-                $sampleDatosPersonales = new DatosPersonales();
-                $samplePermission = new Permisos(false, true, false, true, false, true, false, true, false, true);
-                return new Usuario(1, $sampleDatosPersonales, "", "", 1, 1, $samplePermission, "", 0);
+                $sampleDatosPersonales = new ResponseTypes\DatosPersonales();
+                $samplePermission = new ResponseTypes\Permisos(false, true, false, true, false, true, false, true, false, true);
+                return new ResponseTypes\Usuario(1, $sampleDatosPersonales, "", "", 1, 1, $samplePermission, "", 0);
             case 'cliente':
-                $sampleDatosPersonales = new DatosPersonales();
-                return new Cliente(0, 0, 0, $sampleDatosPersonales);
+                $sampleDatosPersonales = new ResponseTypes\DatosPersonales();
+                return new ResponseTypes\Cliente(0, 0, 0, $sampleDatosPersonales);
             case 'producto':
-                return new Producto(0, 0, 0, 0, 0, 0, 0, "", 0, [100, 200, 300], 0);
+                return new ResponseTypes\Producto(0, 0, 0, 0, 0, 0, 0, "", 0, [100, 200, 300], 0);
             default:
                 throw new Exception("Clase no existe");
         }

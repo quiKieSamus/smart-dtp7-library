@@ -1,6 +1,7 @@
 <?php
-
+// here lie all the classes which define the tables in the fiscal printer
 declare(strict_types=1);
+namespace ResponseTypes;
 
 class ConnectResponse
 {
