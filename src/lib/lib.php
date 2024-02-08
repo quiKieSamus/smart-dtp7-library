@@ -176,6 +176,6 @@ function getSingleResourceByCodigo(string $fiscalIpAndPort, array $userAndPass, 
         return new ReturnTypes\Response(true, []);
     } catch (Exception $error) {
         logError($error);
-        return new ReturnTypes\Response(true, [], $error->getMessage());
+        return new ReturnTypes\Response(false, [], $error->getMessage());
     }
 }
