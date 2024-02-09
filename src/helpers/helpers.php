@@ -6,7 +6,7 @@ function makeObjectConnectResponseFromJSON(string $json): ResponseTypes\ConnectR
         if (!isValidJSON($json)) return false;
         $classProperties = getPropertiesOfClass(new ResponseTypes\ConnectResponse("", 1, "", 1, "", "", "", ""));
         $jsonAssoc = json_decode($json, true);
-
+        if (!is_array($jsonAssoc)) return false;
         if (!keysExistsInJson($classProperties, $jsonAssoc)["status"]) throw new Exception("El json esperado no tiene las keys esperadas");
 
         return new ResponseTypes\ConnectResponse(
