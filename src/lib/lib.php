@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
+require(__DIR__ . "\\..\\helpers\\helpers.php");
+require(__DIR__ . "\\..\\types\\index.php");
 
-function isFiscalPrinterActive($fiscalIp): bool {
+function pingToIp($ip): bool|ReturnTypes\PingResponse {
     try {
         $os = getOS();
         if (!$os) throw new Exception("Os not recognized");
-        $pingDeviceResult = pingDevice($fiscalIp, $os);
-        return $pingDeviceResult->code === 0 ? true : false;
+        $pingDeviceResult = pingDevice($ip, $os);
+        return $pingDeviceResult;
     } catch (Exception $error) {
         logError($error);
         return false;
