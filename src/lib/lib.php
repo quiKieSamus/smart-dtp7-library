@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-require(__DIR__ . "\\..\\helpers\\helpers.php");
-require(__DIR__ . "\\..\\types\\index.php");
+require(__DIR__ . "/../helpers/helpers.php");
+require(__DIR__ . "/../types/index.php");
 
 function pingToIp($ip): bool|ReturnTypes\PingResponse {
     try {
